@@ -1,124 +1,237 @@
 ---
-title: "三国甲烷排放时空分析与未来30年预测"
-author: "D2RS-2026spring 小组"
-date: "2026-04-03"
+title: "中国、澳大利亚、阿鲁巴甲烷排放时空分析与未来30年预测"
+author: "项目小组"
+date: "2026-04-05"
 format:
+  html:
+    toc: false
+    theme: pulse
+    embed-resources: true
   pdf:
     toc: true
     number-sections: true
-    fontsize: 12pt
     geometry: margin=1in
-  html:
-    toc: true
-    theme: cosmo
-    embed-resources: true
 ---
 
-# 1 研究背景
-甲烷是全球第二大温室气体，对气候变暖具有重要影响。不同国家因发展水平、经济规模、人口总量不同，甲烷排放呈现明显差异。本项目以中国、澳大利亚、阿鲁巴三国为对象，开展历史排放分析、驱动因素研究与未来趋势预测。
+<!-- 全局样式（单独用HTML块包裹，避免YAML语法错误） -->
+<style>
+/* 全局样式 */
+body {
+    font-family: "Microsoft YaHei", sans-serif;
+    line-height: 1.8;
+}
+.title-block {
+    text-align: center;
+    padding: 2rem 1rem;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+.title-block h1 {
+    color: #2c3e50;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+.subtitle {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+.tags {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.tag {
+    background: #e3f2fd;
+    color: #007acc;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+.card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+.card h2 {
+    color: #2c3e50;
+    border-left: 5px solid #007acc;
+    padding-left: 1rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+.figure {
+    text-align: center;
+    margin: 2rem 0;
+}
+.figure img {
+    max-width: 90%;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+.team-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+}
+.team-card h3 {
+    margin: 0.5rem 0;
+    color: #2c3e50;
+}
+.team-card p {
+    margin: 0.3rem 0;
+    color: #7f8c8d;
+}
+.conclusion {
+    background: #f0f9ff;
+    border-left: 5px solid #007acc;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+</style>
 
-# 2 研究目的
-1. 分析2005–2024年三国甲烷排放历史变化趋势
-2. 探究甲烷排放与GDP、人口之间的相关关系
-3. 从人均排放视角进行公平性比较
-4. 使用ARIMA模型进行未来30年排放预测
-5. 完成可复现、可展示的完整数据分析项目
+<!-- 标题区 -->
+::: {.title-block}
+# 中国、澳大利亚、阿鲁巴甲烷排放时空分析与未来30年预测
+::: {.subtitle}
+基于 EDGAR & World Bank 数据 | 时间序列预测 | 相关性分析可视化
+:::
+::: {.tags}
+1. 甲烷排放
+2. 时间序列预测
+3. ARIMA
+4. GDP与人口相关性
+5. 三国对比
+:::
+:::
 
-# 3 数据来源
-- 甲烷排放数据：EDGAR全球大气排放数据库
-- GDP与人口数据：世界银行公开数据库
-- 时间范围：2005–2024年
+<!-- 项目简介卡片 -->
+::: {.card}
+## 📌 项目简介
+本项目基于 2005-2024 年历史数据，对中国、澳大利亚、阿鲁巴三个国家的甲烷排放趋势进行分析。
 
-# 4 数据预处理
-1. 将原始宽表数据转换为标准长表格式
-2. 按国家与年份完成多源数据合并
-3. 处理缺失值与异常值
-4. 生成可直接用于分析的标准化数据集
+通过数据清洗、宽表转长表、时间序列预测、相关性建模等完整复现流程，完成排放趋势对比、未来30年高精度预测、排放与经济社会指标关系研究。
+:::
 
-# 5 历史排放趋势分析
-三国排放总量差异显著：
-- 中国排放总量最高，呈缓慢上升趋势
-- 澳大利亚排放中等，保持平稳
-- 阿鲁巴体量小，排放极低且稳定
+<!-- 数据来源卡片 -->
+::: {.card}
+## 📊 数据来源与处理
+- **甲烷排放数据**：EDGAR 数据库（2005-2024）
+- **GDP & 人口数据**：世界银行公开数据
+- **数据格式**：宽表 → 长表（`country, year, ch4, gdp, pop`）
+- **预测模型**：ARIMA（高精度时间序列预测）
+:::
 
-![三国甲烷排放历史趋势](output/results/甲烷排放历史对比.png)
+<!-- 历史排放趋势卡片 -->
+::: {.card}
+## 🐂 2005-2024 三国甲烷排放对比
+三国排放总量呈现显著分层特征：
+1. **中国**：排放总量最高，整体呈缓慢上升趋势，反映经济发展阶段的排放特征
+2. **澳大利亚**：排放量中等，长期保持平稳，体现成熟经济体排放结构
+3.  **阿鲁巴**：国家体量小，排放极低且稳定，对全球排放影响可忽略
 
-# 6 人均甲烷排放对比
-人均排放能更公平地反映各国排放特征：
-- 中国人均排放较高，2010年后趋于平稳
-- 澳大利亚人均排放稳定
-- 阿鲁巴人均排放接近零
+::: {.figure}
+![2005-2024三国甲烷排放历史趋势](../output/results/甲烷排放历史对比.png)
+:::
+:::
 
-![三国人均甲烷排放对比](output/results/三国人均甲烷排放对比图.png)
+<!-- 人均排放对比卡片 -->
+::: {.card}
+## 👥 三国人均甲烷排放对比
+人均排放指标更公平地反映各国排放责任：
+1. **中国**：人均排放较高，2010年后趋于平稳，减排政策逐步显现成效
+2.  **澳大利亚**：人均排放长期稳定，呈现发达国家排放特征
+3.  **阿鲁巴**：人均排放接近0，受限于极小的国家规模
 
-# 7 相关性分析
-通过相关性热力图可以看出：
-- 甲烷排放与GDP相关系数高达 0.92
-- 甲烷排放与人口相关系数为 0.84
-- GDP与人口呈现强相关
+::: {.figure}
+![三国人均甲烷排放对比](../output/results/三国人均甲烷排放对比图.png)
+:::
+:::
 
-结论：经济规模是甲烷排放最核心的驱动因素。
+<!-- 相关性分析卡片 -->
+::: {.card}
+## 🔗 甲烷排放与经济、人口相关性分析
+通过皮尔逊相关系数热力图，量化排放与经济、人口的关联强度：
+1.  甲烷排放与GDP相关系数：**0.92（极强正相关）**
+2.  甲烷排放与人口相关系数：**0.84（强正相关）**
+3.  GDP与人口相关系数：**0.84（强正相关）**
 
-![相关性热力图](output/results/相关性热力图.png)
+**核心结论**：经济规模是甲烷排放最核心的驱动因素，人口为重要基础条件。
 
-# 8 未来30年排放预测（ARIMA）
-基于ARIMA时间序列模型预测2025–2054年排放：
-- 中国排放缓慢上升
-- 澳大利亚保持平稳
-- 阿鲁巴维持低排放水平
+::: {.figure}
+![甲烷排放与GDP、人口相关性热力图](../output/results/相关性热力图.png)
+:::
+:::
 
-![ARIMA未来30年预测](output/results/甲烷排放ARIMA预测.png)
+<!-- 未来预测卡片 -->
+::: {.card}
+## 🔮 2025-2054 三国甲烷排放未来30年预测（ARIMA模型）
+基于ARIMA时间序列模型，对三国未来30年甲烷排放进行高精度预测：
+1.  **中国**：排放保持缓慢上升，增速逐步放缓
+2.  **澳大利亚**：排放基本平稳，无明显增长
+3.  **阿鲁巴**：维持极低排放水平，无显著变化
 
-# 9 研究结论
-1. 三国甲烷排放差异明显，受国家规模、经济水平、人口影响显著。
-2. 甲烷排放与GDP、人口呈强正相关，经济发展是主要驱动力。
-3. 人均指标更适合国际排放公平性比较。
-4. 未来30年，中国排放缓慢上升，澳、阿保持稳定。
-5. 减排政策应根据国家发展阶段差异化制定。
+预测结果包含95%置信区间，为减排政策制定提供科学支撑。
 
-# 10 项目复现方式
-```bash
-# =============================================
-# 第一步：创建并激活虚拟环境
-# 作用：保证所有人运行环境一致
-# =============================================
-python -m venv .venv
+::: {.figure}
+![ARIMA未来30年排放预测](../output/results/甲烷排放ARIMA预测.png)
+:::
+:::
 
-# Windows 激活
-.venv\Scripts\Activate.ps1
+<!-- 研究结论卡片 -->
+::: {.card}
+## ✅ 研究结论
+::: {.conclusion}
+1.  三国甲烷排放水平差异显著，核心受**国家规模、经济发展水平、人口总量**三大因素影响。
+2.  甲烷排放与GDP、人口呈强正相关，**经济发展是排放增长的最核心驱动力**。
+3.  人均排放指标更适合用于国际排放公平性比较，清晰展现不同发展阶段的排放特征。
+4.  未来30年，中国排放将缓慢上升，澳大利亚与阿鲁巴保持稳定。
+5.  甲烷减排政策应差异化制定：发展中国家需在经济增长中推进减排，发达国家需依托技术优势深化减排。
+:::
+:::
 
-# macOS/Linux 激活
-# source .venv/bin/activate
+<!-- 复现流程卡片 -->
+::: {.card}
+## 🧪 项目完整复现流程
 
-# =============================================
-# 第二步：安装所有依赖包
-# 作用：自动安装 pandas、matplotlib、statsmodels 等
-# =============================================
+## 创建并激活虚拟环境
+1. python -m venv .venv
+2. .venv\Scripts\Activate.ps1
+
+## 安装依赖
 pip install -r requirements.txt
 
-# =============================================
-# 第三步：运行数据预处理
-# 作用：清洗数据、合并数据
-# =============================================
+## 数据预处理
 python src/01_data.py
 
-# ==============================================
-# 第四步：分步生成所有可视化图表（共5张）
-# 作用：按流程依次生成历史趋势、人均排放、相关性等全部图表
-# ==============================================
+## 生成图表
+1. python src/02_ch4_trend.py
+2. python src/03_ch4_forecast_arima.py
+3. python src/04_ch4_correlation.py
+4. python src/05_per_capita_ch4.py
+5. python src/06_correlation_heatmap.py
 
-# 4.1 生成三国甲烷排放历史趋势图
-python src/02_ch4_trend.py
+## 渲染报告
+quarto render docs/report.qmd --to html
 
-# 4.2 生成ARIMA未来30年排放预测图
-python src/03_ch4_forecast_arima.py
+# 团队分工
+::: {.card}
+1. 李淑慧（2025303110033）：数据预处理、可视化绘图
+2. 余瑞（2025303120005）：数据分析、甲烷排放趋势图
+3. 覃紫慧（2025303120142）：报告撰写、相关性分析
 
-# 4.3 生成甲烷排放与GDP、人口相关性散点图
-python src/04_ch4_correlation.py
-
-# 4.4 生成三国人均甲烷排放对比图
-python src/05_per_capita_ch4.py
-
-# 4.5 生成甲烷排放、GDP、人口相关性热力图
-python src/06_correlation_heatmap.py
+---
 
